@@ -1,7 +1,8 @@
-// Alexander Edwards
-// CISP 430 Wednesday 6-9pm
-// Spring 2015
-// Assignment #2
+/* Alexander Edwards
+ * CISP 430 Wednesday 6-9pm
+ * Spring 2015
+ * assignment #3
+ */
 
 #include "List.h"
 #ifndef STACK_H_
@@ -16,6 +17,13 @@ public:
 	void pop();
 	TYPE showTop();
 };
+
+/*******************************************************************************
+ * It's best implementation not be in a header file but for ease of compiling  *
+ * I kept in the header. I may move the implementation into a separate file.   *
+ * That being said pretend it isn't here.                                      *
+ *******************************************************************************/
+
 // ==== showTop ========
 template <typename TYPE>
 TYPE Stack<TYPE>::showTop(){
@@ -37,12 +45,12 @@ void Stack<TYPE>::push(TYPE dataIn){
 // ==== constructor =====
 template <typename TYPE>
 Stack<TYPE>::Stack(): List<TYPE>(){
-
+	// I believe the parent constructor will suffice
 }
 
 // ==== destructor ====
 template <typename TYPE>
 Stack<TYPE>::~Stack(){
-
+	// I believe parent deconstructor will suffice
 }
 #endif /* STACK_H_ */

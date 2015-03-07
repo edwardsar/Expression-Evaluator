@@ -1,7 +1,8 @@
-// Alexander Edwards
-// CISP 430 Wednesday 6-9pm
-// Spring 2015
-// Assignment #2
+/* Alexander Edwards
+ * CISP 430 Wednesday 6-9pm
+ * Spring 2015
+ * assignment #3
+ */
 #include "ListNode.h"
 
 #ifndef LIST_H_
@@ -36,8 +37,14 @@ private:
 	void ascendingOrder(TYPE dataIn);
 	void descendingOrder(TYPE dataIn);
 };
+/*******************************************************************************
+ * It's best implementation not be in a header file but for ease of compiling  *
+ * I kept in the header. I may move the implementation into a separate file.   *
+ * That being said pretend it isn't here.                                      *
+ *******************************************************************************/
 
 // ==== isFull ====
+// attempts to allocate memory with new, if successful it returns true.
 template <typename TYPE>
 bool List<TYPE>::isFull(){
 	ListNode<TYPE>* temp= new ListNode<TYPE>();

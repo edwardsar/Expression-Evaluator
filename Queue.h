@@ -1,7 +1,8 @@
-// Alexander Edwards
-// CISP 430 Wednesday 6-9pm
-// Spring 2015
-// Assignment #2
+/* Alexander Edwards
+ * CISP 430 Wednesday 6-9pm
+ * Spring 2015
+ * assignment #3
+ */
 
 #include "List.h"
 #ifndef QUEUE_H_
@@ -15,6 +16,13 @@ public:
 	void enQueue(TYPE dataIn);
 	TYPE deQueue();
 };
+
+/*******************************************************************************
+ * It's best implementation not be in a header file but for ease of compiling  *
+ * I kept in the header. I may move the implementation into a separate file.   *
+ * That being said pretend it isn't here.                                      *
+ *******************************************************************************/
+
 template <typename TYPE>
 void Queue<TYPE>::enQueue(TYPE dataIn){
 	this->insert(dataIn, this->end(), List<TYPE>::After);
@@ -27,12 +35,12 @@ TYPE Queue<TYPE>::deQueue(){
 }
 template <typename TYPE>
 Queue<TYPE>::Queue(): List<TYPE>() {
-	// TODO Auto-generated constructor stub
+	// I believe parent constructor will suffice
 
 }
 
 template <typename TYPE>
 Queue<TYPE>::~Queue() {
-	// TODO Auto-generated destructor stub
+	// I believe parent deconstructor will suffice
 }
 #endif /* QUEUE_H_ */
