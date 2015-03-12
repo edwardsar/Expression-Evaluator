@@ -8,6 +8,7 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
 
+// ============ class definition ================
 template <typename TYPE>
 class Queue : public List<TYPE> {
 public:

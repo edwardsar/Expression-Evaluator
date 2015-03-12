@@ -8,6 +8,7 @@
 #ifndef STACK_H_
 #define STACK_H_
 
+// ============ class definition ================
 template <typename TYPE>
 class Stack: public List<TYPE> {
 public:

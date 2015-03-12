@@ -7,6 +7,7 @@
 #ifndef LISTNODE_H_
 #define LISTNODE_H_
 
+// ============ class definition ================
 template <typename TYPE>
 class ListNode {
 private:
