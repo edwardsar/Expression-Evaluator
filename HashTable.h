@@ -1,50 +1,52 @@
-/*
- * HashTable.h
- *
- *  Created on: Mar 10, 2015
- *      Author: alex
+/* Alexander Edwards
+ * CISP 430 Wednesday 6-9pm
+ * Spring 2015
+ * assignment #3
  */
-#include <string.h>
+
 #ifndef HASHTABLE_H_
 #define HASHTABLE_H_
+#include <string.h>
+
 
 // ===================== Type definitions ===========================
 // ==================================================================
-typedef char STR10[10+1];     // type definition for key identifiers
+typedef char STR80[80+1];     // type definition for key identifiers
 
-typedef char STR20[20+1];     // type definition for data
+template <typename T>
+struct SLOT{          // type definition for slot, which contains
+	STR80 key;                // the key and data to be looked up
+	T data;
+};
 
-typedef struct SLOT{          // type definition for slot, which contains
-	STR10 key;                // the key and data to be looked up
-	STR20 data;
-} SLOT;
-
-typedef struct BUCKET{        // type definition for buckets which
-	SLOT *slots;              // contain slots and links to other buckets
+template <typename T>
+struct BUCKET{        // type definition for buckets which
+	SLOT<T> *slots;              // contain slots and links to other buckets
 	int overflow;             // overflow int refers to another bucket
 	int count;                // count int keeps track of how many slots are filled
-} BUCKET;
+};
 
 
 
 // ==== class definition =====
+template <typename T>
 class HashTable {
 private:
-	BUCKET *array;
+	BUCKET<T> *array;
 	int maxBuckets;// maximum number of buckets in hashtable
 	int primaryBuckets;// number of primary buckets in hashtable
 	int nextAvailableBucket; // keeps track of next overflow buckets index
 	int maxSlots;  // maximum number of slots in bucket
 public:
-	int hashFunction(STR10 key);
+	int hashFunction(STR80 key);
 	bool hasFreeSlot(int hashIndex);
 	bool hasOverflow(int hashIndex);
-	void insert(STR10 key, STR20 data);
-	void insertHere(STR10 key, STR20 data, int hashIndex);
-	bool search(STR10 key);
-	STR20* getDataHelper(STR10 key, int hashIndex);
-	STR20* getData(STR10 key);
-	bool find(STR10 key, int hashIndex);
+	void insert(STR80 key, T data);
+	void insertHere(STR80 key, T data, int hashIndex);
+	bool search(STR80 key);
+	T* getDataHelper(STR80 key, int hashIndex);
+	T* getData(STR80 key);
+	bool find(STR80 key, int hashIndex);
 	HashTable(int MAXBUCKETS = 30, int MAXSLOTS = 20, int primaries = 20 );
 	virtual ~HashTable();
 };
@@ -57,35 +59,37 @@ public:
 
 // ====================== HashFunction ==============================
 // ==================================================================
-int HashTable::hashFunction(STR10 key){
+template <typename T>
+int HashTable<T>::hashFunction(STR80 key){
 	int intermediate_value = (int) key[1] + (int) key[3] + (int) key[5]; // TODO
 	int hash_index = intermediate_value % primaryBuckets;
 	return hash_index;
 }
 // ======================= constructor ==============================
 // ==================================================================
-HashTable::HashTable(int MAXBUCKETS, int MAXSLOTS, int primaries){
+template <typename T>
+HashTable<T>::HashTable(int MAXBUCKETS, int MAXSLOTS, int primaries){
 	primaryBuckets = primaries;
 	nextAvailableBucket = primaryBuckets;
 	maxBuckets = MAXBUCKETS;
 	maxSlots = MAXSLOTS;
-	array = new BUCKET[MAXBUCKETS];
+	array = new BUCKET<T>[MAXBUCKETS];
 	for(int i = 0; i<MAXBUCKETS; i++){
-		array[i].slots = new SLOT[MAXSLOTS];
+		array[i].slots = new SLOT<T>[MAXSLOTS];
 		array[i].count = 0;
 		array[i].overflow = -1;
 	}
 }
 // ======================= hasFreeSlot() ============================
 // ==================================================================
-// supports InsertIntoHT
-bool HashTable::hasFreeSlot(int hashIndex){
+template <typename T>
+bool HashTable<T>::hasFreeSlot(int hashIndex){
 	return (array[hashIndex].count < maxSlots);
 }
 // ======================= hasOverFlow() ============================
 // ==================================================================
-// supports InsertIntoHT
-bool HashTable::hasOverflow(int hashIndex){
+template <typename T>
+bool HashTable<T>::hasOverflow(int hashIndex){
 	if(array[hashIndex].overflow == -1)
 		return false;
 	else
@@ -93,11 +97,12 @@ bool HashTable::hasOverflow(int hashIndex){
 }
 // ======================= insertHere   =============================
 // ==================================================================
-void HashTable::insertHere( STR10 key, STR20 data, int hashIndex){
+template <typename T>
+void HashTable<T>::insertHere( STR80 key, T data, int hashIndex){
 	if(hasFreeSlot(hashIndex)){
 		int slotIndex = array[hashIndex].count;
 		strcpy( array[hashIndex].slots[slotIndex].key, key);
-		strcpy(array[hashIndex].slots[slotIndex].data, data);
+		array[hashIndex].slots[slotIndex].data = data;
 		array[hashIndex].count++;
 	}
 	else{
@@ -112,14 +117,16 @@ void HashTable::insertHere( STR10 key, STR20 data, int hashIndex){
 }
 // =======================     insert   =============================
 // ==================================================================
-void HashTable::insert( STR10 key, STR20 data){
+template <typename T>
+void HashTable<T>::insert( STR80 key, T data){
 	int hashIndex = hashFunction(key);
 	insertHere(key, data, hashIndex);
 }
 
 // ============================= find ===============================
 // ==================================================================
-bool HashTable::find( STR10 key, int hashIndex){
+template <typename T>
+bool HashTable<T>::find( STR80 key, int hashIndex){
 	if( array[hashIndex].count == 0){
 		return false;
 	}
@@ -139,11 +146,14 @@ bool HashTable::find( STR10 key, int hashIndex){
 
 // =========================== Search ===============================
 // ==================================================================
-bool HashTable::search(STR10 key){
+template <typename T>
+bool HashTable<T>::search(STR80 key){
 	int hashIndex = hashFunction(key);
 	return find(key, hashIndex);
 }
-STR20* HashTable::getDataHelper(STR10 key, int hashIndex){
+
+template <typename T>
+T* HashTable<T>::getDataHelper(STR80 key, int hashIndex){
 	for(int i=0; i<array[hashIndex].count; i++){
 		if(strcmp(array[hashIndex].slots[i].key, key) == 0){
 			return &array[hashIndex].slots[i].data;
@@ -158,7 +168,9 @@ STR20* HashTable::getDataHelper(STR10 key, int hashIndex){
 
 // =========================== getData ==============================
 // ==================================================================
-STR20* HashTable::getData(STR10 key){
+
+template <typename T>
+T* HashTable<T>::getData(STR80 key){
 	if(search(key)){
 		int hashIndex = hashFunction(key);
 		for(int i=0; i<array[hashIndex].count; i++){
@@ -175,7 +187,8 @@ STR20* HashTable::getData(STR10 key){
 
 
 // ==== destructor ======
-HashTable::~HashTable() {
+template <typename T>
+HashTable<T>::~HashTable() {
 	for(int i = 0; i < maxBuckets; i++){
 		delete [] array[i].slots;
 	}
