@@ -1,0 +1,10 @@
+TODO:
+all - clean up, where to include (before or after include gards), follow style guides(Boost?), self documenting identifiers
+
+Parser - make it reusable, adding delimiter setting as well as inclusive exclusive of delimiters, (al ph + 1 error), divide by zero catch
+
+List - implement flags or exceptions for points of error(isFull)
+
+Expression-Evaluator - parsetable(use parse) to create expression then evaluate(expression). parsetable does not evaluate
+
+
