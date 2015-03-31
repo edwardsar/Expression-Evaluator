@@ -6,10 +6,7 @@
 #include "HashTable.h"
 #include<iostream>
 #include<string.h>
-#include "Parser.h"
-#include "List.h"
-#include "Stack.h"
-#include "Queue.h"
+#include "ParseTable.h"
 #include "Evaluator.h"
 
 bool quit(std::string str){
@@ -18,17 +15,18 @@ bool quit(std::string str){
 int main(void){
 	HashTable<double> symbolTable;
 	std::string input;
-	Queue<std::string> evTest;
+	ParseTable parsTable;
 	Evaluator evaluator(&symbolTable);
-	Parser pars;
 
-	evTest.enQueue("A");
-	evTest.enQueue("2");
-	evTest.enQueue("=");
+	std::cout << "\nEnter Expression\n> ";
+	std::getline(std::cin, input);
+	while(input!="quit"){
+		std::cout << "Ans: " << evaluator.evaluatePostfix(parsTable.convertToPostfix(input)) << std::endl;
+		std::cout << "Enter Expression\n> ";
+		std::getline(std::cin, input);
+	}
 
-	std::cout << "ans: " << evaluator.evaluatePostfix(&evTest) << std::endl;
 
-	evTest.enQueue("A");
-	std::cout << "ans: " << evaluator.evaluatePostfix(&evTest) << std::endl;
+
 	return 0;
 }
