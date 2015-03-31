@@ -13,14 +13,14 @@ class Parser {
 public:
 	std::string getNextToken();
 	//void setDelimiters();
-	bool isNext();
-	bool isOperator(char c);
+	bool hasNext();
 	void reset();
 	Parser(std::string is);
 	Parser();
 	virtual ~Parser();
 	void str(std::string str);
 private:
+	bool isOperator(char c);
 	char getCharacter();
 	int sizeOfDelimitersArray = 7;
 	const char Delimiters[7] = { '-', '+', '*', '/', '(', ')', '='};

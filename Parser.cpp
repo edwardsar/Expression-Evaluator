@@ -29,6 +29,7 @@ void Parser::reset(){
 }
 void Parser::str(std::string str){
 	in = str;
+	reset();
 }
 bool Parser::isOperator(char c){
 	for(int i=0; i<sizeOfDelimitersArray; i++){
@@ -38,7 +39,7 @@ bool Parser::isOperator(char c){
 	return false;
 }
 
-bool Parser::isNext(){
+bool Parser::hasNext(){
 	return sPtr < in.size();
 }
 char Parser::getCharacter(){
