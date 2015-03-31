@@ -17,26 +17,17 @@ double Evaluator::evaluatePostfix(Queue<std::string>* postfixQueue){
 	std::string tempToken;
 	double a, b;
 
-/*
-	tempToken = postfixQueue->deQueue();
 
-	if(isVar(tempToken) && isUndefined(tempToken)){
-		std::cout << "undefinded: " << tempToken << std::endl;
-		lhs = tempToken;
-		if(!postfixQueue->isEmpty())
-			tempToken = postfixQueue->deQueue();
-	}
-*/
 	while(!postfixQueue->isEmpty()){
 		tempToken = postfixQueue->deQueue();
 
-// ------
+
 		if(isVar(tempToken) && !isOperator(tempToken)  && isUndefined(tempToken)){
 			lhs = tempToken;
 			if(!postfixQueue->isEmpty())
 				tempToken = postfixQueue->deQueue();
 		}
-//-------
+
 		if(!isOperator(tempToken)){
 
 			operandStack.push(valueOf(tempToken));
@@ -74,6 +65,10 @@ double Evaluator::evaluatePostfix(Queue<std::string>* postfixQueue){
 			else if(tempToken == "SQRT"){
 							a = operandStack.pop();
 							operandStack.push(sqrt(a));
+			}
+			else if(tempToken == "ABS"){
+							a = operandStack.pop();
+							operandStack.push(abs(a));
 			}
 			else if(tempToken == "="){
 							a = operandStack.showTop();

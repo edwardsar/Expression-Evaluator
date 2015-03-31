@@ -25,6 +25,7 @@ private:
 	bool isVar(std::string str);
 	double valueOf(std::string in);
 	bool isUndefined(std::string in);
+	void displayPostfix();
 public:
 	double evaluatePostfix(Queue<std::string>* postfixQueue);
 	bool isOperator(std::string);
