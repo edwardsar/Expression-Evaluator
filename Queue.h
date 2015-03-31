@@ -13,6 +13,7 @@ template <typename TYPE>
 class Queue : public List<TYPE> {
 public:
 	Queue();
+	TYPE showTop();
 	virtual ~Queue();
 	void enQueue(TYPE dataIn);
 	TYPE deQueue();
@@ -27,6 +28,10 @@ public:
 template <typename TYPE>
 void Queue<TYPE>::enQueue(TYPE dataIn){
 	this->insert(dataIn, this->end(), List<TYPE>::After);
+}
+template <typename TYPE>
+TYPE Queue<TYPE>::showTop(){
+	return this->peek(this->start());
 }
 template <typename TYPE>
 TYPE Queue<TYPE>::deQueue(){
