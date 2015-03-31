@@ -24,7 +24,12 @@ std::string Parser::getNextToken(){
 	}while(sPtr <= in.size());
 	return temp;
 }
-
+void Parser::reset(){
+	sPtr = 0;
+}
+void Parser::str(std::string str){
+	in = str;
+}
 bool Parser::isOperator(char c){
 	for(int i=0; i<sizeOfDelimitersArray; i++){
 		if(c==Delimiters[i])
@@ -48,7 +53,9 @@ char Parser::getCharacter(){
 Parser::Parser(std::string is) {
 	in = is;
 }
+Parser::Parser(){
 
+}
 Parser::~Parser() {
 	// TODO Auto-generated destructor stub
 }
