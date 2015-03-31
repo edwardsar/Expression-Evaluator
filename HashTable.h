@@ -38,15 +38,15 @@ private:
 	int nextAvailableBucket; // keeps track of next overflow buckets index
 	int maxSlots;  // maximum number of slots in bucket
 public:
-	int hashFunction(STR80 key);
+	int hashFunction(const STR80 key);
 	bool hasFreeSlot(int hashIndex);
 	bool hasOverflow(int hashIndex);
-	void insert(STR80 key, T data);
-	void insertHere(STR80 key, T data, int hashIndex);
-	bool search(STR80 key);
-	T* getDataHelper(STR80 key, int hashIndex);
-	T* getData(STR80 key);
-	bool find(STR80 key, int hashIndex);
+	void insert(const STR80 key, T data);
+	void insertHere(const STR80 key, T data, int hashIndex);
+	bool search(const STR80 key);
+	T* getDataHelper(const STR80 key, int hashIndex);
+	T* getData(const STR80 key);
+	bool find(const STR80 key, int hashIndex);
 	HashTable(int MAXBUCKETS = 30, int MAXSLOTS = 20, int primaries = 20 );
 	virtual ~HashTable();
 };
@@ -60,8 +60,8 @@ public:
 // ====================== HashFunction ==============================
 // ==================================================================
 template <typename T>
-int HashTable<T>::hashFunction(STR80 key){
-	int intermediate_value = (int) key[1] + (int) key[3] + (int) key[5]; // TODO
+int HashTable<T>::hashFunction(const STR80 key){
+	int intermediate_value = (int) key[0]; //(int) key[1] + (int) key[3] + (int) key[5]; // TODO
 	int hash_index = intermediate_value % primaryBuckets;
 	return hash_index;
 }
@@ -98,7 +98,7 @@ bool HashTable<T>::hasOverflow(int hashIndex){
 // ======================= insertHere   =============================
 // ==================================================================
 template <typename T>
-void HashTable<T>::insertHere( STR80 key, T data, int hashIndex){
+void HashTable<T>::insertHere( const STR80 key, T data, int hashIndex){
 	if(hasFreeSlot(hashIndex)){
 		int slotIndex = array[hashIndex].count;
 		strcpy( array[hashIndex].slots[slotIndex].key, key);
@@ -118,7 +118,7 @@ void HashTable<T>::insertHere( STR80 key, T data, int hashIndex){
 // =======================     insert   =============================
 // ==================================================================
 template <typename T>
-void HashTable<T>::insert( STR80 key, T data){
+void HashTable<T>::insert(const STR80 key, T data){
 	int hashIndex = hashFunction(key);
 	insertHere(key, data, hashIndex);
 }
@@ -126,7 +126,7 @@ void HashTable<T>::insert( STR80 key, T data){
 // ============================= find ===============================
 // ==================================================================
 template <typename T>
-bool HashTable<T>::find( STR80 key, int hashIndex){
+bool HashTable<T>::find( const STR80 key, int hashIndex){
 	if( array[hashIndex].count == 0){
 		return false;
 	}
@@ -147,13 +147,13 @@ bool HashTable<T>::find( STR80 key, int hashIndex){
 // =========================== Search ===============================
 // ==================================================================
 template <typename T>
-bool HashTable<T>::search(STR80 key){
+bool HashTable<T>::search(const STR80 key){
 	int hashIndex = hashFunction(key);
 	return find(key, hashIndex);
 }
 
 template <typename T>
-T* HashTable<T>::getDataHelper(STR80 key, int hashIndex){
+T* HashTable<T>::getDataHelper(const STR80 key, int hashIndex){
 	for(int i=0; i<array[hashIndex].count; i++){
 		if(strcmp(array[hashIndex].slots[i].key, key) == 0){
 			return &array[hashIndex].slots[i].data;
@@ -170,7 +170,7 @@ T* HashTable<T>::getDataHelper(STR80 key, int hashIndex){
 // ==================================================================
 
 template <typename T>
-T* HashTable<T>::getData(STR80 key){
+T* HashTable<T>::getData(const STR80 key){
 	if(search(key)){
 		int hashIndex = hashFunction(key);
 		for(int i=0; i<array[hashIndex].count; i++){

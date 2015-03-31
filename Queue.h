@@ -7,7 +7,7 @@
 #include "List.h"
 #ifndef QUEUE_H_
 #define QUEUE_H_
-
+#include <iostream>
 // ============ class definition ================
 template <typename TYPE>
 class Queue : public List<TYPE> {
@@ -42,6 +42,6 @@ Queue<TYPE>::Queue(): List<TYPE>() {
 
 template <typename TYPE>
 Queue<TYPE>::~Queue() {
-	// I believe parent deconstructor will suffice
+
 }
 #endif /* QUEUE_H_ */

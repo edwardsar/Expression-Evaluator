@@ -15,7 +15,7 @@ public:
 	Stack();
 	virtual ~Stack();
 	void push(TYPE dataIn);
-	void pop();
+	TYPE pop();
 	TYPE showTop();
 };
 
@@ -33,8 +33,10 @@ TYPE Stack<TYPE>::showTop(){
 
 // ==== pop =====
 template <typename TYPE>
-void Stack<TYPE>::pop(){
+TYPE Stack<TYPE>::pop(){
+	TYPE temp = showTop();
 	this->remove(this->start());
+	return temp;
 }
 
 // ==== push ====

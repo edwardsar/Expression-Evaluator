@@ -14,11 +14,14 @@ public:
 	std::string getNextToken();
 	//void setDelimiters();
 	bool isNext();
-	char getCharacter();
 	bool isOperator(char c);
+	void reset();
 	Parser(std::string is);
+	Parser();
 	virtual ~Parser();
+	void str(std::string str);
 private:
+	char getCharacter();
 	int sizeOfDelimitersArray = 7;
 	const char Delimiters[7] = { '-', '+', '*', '/', '(', ')', '='};
 	std::string in; // input string is saved here and used for parsing
