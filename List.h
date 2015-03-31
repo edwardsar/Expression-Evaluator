@@ -3,18 +3,34 @@
  * Spring 2015
  * assignment #3
  */
-#include "ListNode.h"
+
 
 #ifndef LIST_H_
 #define LIST_H_
-
+#include "ListNode.h"
+#include <iostream>
 // ======= class definition =======
 template <typename TYPE>
 class List {
 public:
 	enum ORDER { ASCENDING, DESCENDING, DEFAULT };
 	enum BeforeOrAfter { Before, After};
-	typedef ListNode<TYPE>* Iterator;
+	// ======= Iterator definition =======
+	class ListIterator {
+	public:
+		void getNext(){ptr=ptr->getNext(); }
+		void getPrev(){ptr=ptr->getPrev(); }
+		TYPE getData(){return ptr->getData();}
+		bool hasNext(){ return ptr->hasNext();}
+		void start(){ ptr = ls->start(); }
+		void end(){ ptr = ls->end();}
+		bool isNull(){return ptr==nullptr;}
+		ListIterator(List<TYPE>* coupleWith){ ls = coupleWith; ptr = nullptr;}
+	private:
+		ListNode<TYPE>* ptr;
+		List<TYPE>* ls;
+	};
+	// === end Iterator definition =====
 	List();
 	virtual ~List();
 	bool isEmpty() const;
@@ -25,10 +41,11 @@ public:
 	void remove(ListNode<TYPE>* removeFrom);
 	bool isOrdered();
 	TYPE peek(ListNode<TYPE>* peekAt);
-	ListNode<TYPE>* start();
-	ListNode<TYPE>* end();
 	void makeOrderedList(ORDER x);
 	bool isFull();
+protected:
+	ListNode<TYPE>* start();
+	ListNode<TYPE>* end();
 private:
 	ListNode<TYPE> *head, *tail;
 	int listSize;
@@ -221,13 +238,15 @@ List<TYPE>::List() : head(nullptr), tail(nullptr),
 // ====== destructor ======
 template <typename TYPE>
 List<TYPE>::~List() {
+
 	ListNode<TYPE> *it, *temp;
 	it = head;
-	do{
+	while(it!=nullptr){
 		temp = it;
 		it=it->getNext();
 		delete temp;
-	}while(it!=nullptr);
+	}
+
 }
 
 // ====== is empty =====
