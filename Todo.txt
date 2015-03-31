@@ -7,4 +7,5 @@ List - implement flags or exceptions for points of error(isFull), serious bug in
 
 Expression-Evaluator - parsetable(use parse) to create expression then evaluate(expression). parsetable does not evaluate
 
+ParseTable - fix parsetable to accommodate functions i.e sqrt, abs
 
