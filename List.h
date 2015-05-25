@@ -1,7 +1,5 @@
-/* Alexander Edwards
- * CISP 430 Wednesday 6-9pm
- * Spring 2015
- * assignment #3
+/*
+ * Author: Alexander Edwards
  */
 
 
@@ -13,22 +11,22 @@
 template <typename TYPE>
 class List {
 public:
-	enum ORDER { ASCENDING, DESCENDING, DEFAULT };
-	enum BeforeOrAfter { Before, After};
 	// ======= Iterator definition =======
-	class ListIterator {
+	class Iterator {
 	public:
-		void getNext(){ptr=ptr->getNext(); }
-		void getPrev(){ptr=ptr->getPrev(); }
+		void getNext(){ptr = ptr->getNext(); }
+		void getPrev(){ptr = ptr->getPrev(); }
 		TYPE getData(){return ptr->getData();}
-		bool hasNext(){ return ptr->hasNext();}
-		void start(){ ptr = ls->start(); }
-		void end(){ ptr = ls->end();}
-		bool isNull(){return ptr==nullptr;}
-		ListIterator(List<TYPE>* coupleWith){ ls = coupleWith; ptr = nullptr;}
+		void startAtHead(){ ptr = coupledList->start(); }
+		void startAtTail(){ ptr = coupledList->end(); }
+		bool end(){ return ptr == nullptr;}
+		void operator=(List<TYPE>::Iterator sourceOfCopy){	ptr = sourceOfCopy.ptr; coupledList = sourceOfCopy.coupledList;}
+		Iterator(){ ptr = nullptr; coupledList = nullptr;}
 	private:
+		Iterator(List<TYPE>* listToCoupleWith){ coupledList = listToCoupleWith; ptr = nullptr;}
+		friend class List<TYPE>;
 		ListNode<TYPE>* ptr;
-		List<TYPE>* ls;
+		List<TYPE>* coupledList;
 	};
 	// === end Iterator definition =====
 	List();
@@ -36,29 +34,33 @@ public:
 	bool isEmpty() const;
 	bool search(TYPE dataKey) const;
 	int size() const;
-	void insert(TYPE dataIn, ListNode<TYPE>* Where, BeforeOrAfter BA);
 	void insert(TYPE dataIn);
 	void remove(ListNode<TYPE>* removeFrom);
-	bool isOrdered();
 	TYPE peek(ListNode<TYPE>* peekAt);
-	void makeOrderedList(ORDER x);
 	bool isFull();
+	void removeAllListEntries();
+	List<TYPE>::Iterator getIterator();
 protected:
+	enum InsertPlacementModifier { Before, After};
+	void insert(TYPE dataIn, ListNode<TYPE>* insertHerePtr, InsertPlacementModifier placementModifier);
 	ListNode<TYPE>* start();
 	ListNode<TYPE>* end();
 private:
 	ListNode<TYPE> *head, *tail;
-	int listSize;
-	bool ordered;
-	ORDER orderingFunction;
-	void ascendingOrder(TYPE dataIn);
-	void descendingOrder(TYPE dataIn);
+	unsigned int listSize;
+	bool fullFlag;
 };
+
 /*******************************************************************************
  * It's best implementation not be in a header file but for ease of compiling  *
  * I kept in the header. I may move the implementation into a separate file.   *
  * That being said pretend it isn't here.                                      *
  *******************************************************************************/
+// ==== getIterator ====
+template <typename TYPE>
+typename List<TYPE>::Iterator List<TYPE>::getIterator(){
+	return List<TYPE>::Iterator(this);
+}
 
 // ==== isFull ====
 // attempts to allocate memory with new, if successful it returns true.
@@ -73,14 +75,7 @@ bool List<TYPE>::isFull(){
 		return false;
 	}
 }
-// ==== makeOrderedList ====
-template <typename TYPE>
-void List<TYPE>::makeOrderedList( ORDER x ){
-	if (isEmpty()){
-		ordered = true;
-		orderingFunction = x;
-	}
-}
+
 // ==== start ====
 template <typename TYPE>
 ListNode<TYPE>* List<TYPE>::start(){
@@ -98,92 +93,40 @@ template <typename TYPE>
 TYPE List<TYPE>::peek(ListNode<TYPE>* peekAt){
 	return peekAt->getData();
 }
-// ==== isSorted ====
-template <typename TYPE>
-bool List<TYPE>::isOrdered(){
-	return ordered;
-}
-// ====== descendingOrder =======
-template <typename TYPE>
-void List<TYPE>::descendingOrder(TYPE dataIn){
-	if(isEmpty()){
-		insert(dataIn, head, Before);
-	}
-	else if(dataIn > head->getData()){
-		insert(dataIn, head, Before);
-	}
-	else if(dataIn < tail->getData()){
-		insert(dataIn, tail, After);
-	}
-	else{
-		ListNode<TYPE>* currentNode = head;
-		while ( !((dataIn < currentNode->getData()) && (dataIn >= currentNode->getNext()->getData()))){
-			currentNode = currentNode->getNext();
-		}
-		insert(dataIn, currentNode, After);
-	}
-}
-// ====== ascendingOrder =======
-template <typename TYPE>
-void List<TYPE>::ascendingOrder(TYPE dataIn){
-	if(isEmpty()){
 
-		insert(dataIn, head, Before);
-	}
-	else if(dataIn < head->getData()){
-
-		insert(dataIn, head, Before);
-	}
-	else if( dataIn > tail->getData()){
-
-		insert(dataIn, tail, After);
-	}
-	else {
-		ListNode<TYPE>* currentNode = head;
-		while ( !((dataIn > currentNode->getData()) && (dataIn <= currentNode->getNext()->getData()))){
-			currentNode = currentNode->getNext();
-		}
-		insert(dataIn, currentNode, After);
-	}
-}
 // ====== insert =======
 template <typename TYPE>
 void List<TYPE>::insert(TYPE dataIn){
-	if(orderingFunction == ASCENDING)
-		ascendingOrder(dataIn);
-	else if(orderingFunction == DESCENDING)
-		descendingOrder(dataIn);
-	else
-		insert(dataIn, head, Before);
+		insert(dataIn, head, After);      // FIX FIX FIX
 }
 // ====== insert =======
 template <typename TYPE>
-void List<TYPE>::insert(TYPE dataIn, ListNode<TYPE>* where, BeforeOrAfter BA){
+void List<TYPE>::insert(TYPE dataIn, ListNode<TYPE>* insertHerePtr, InsertPlacementModifier placementModifier){
 	// special empty list case
-	if( isEmpty() ){
+	if( this->isEmpty() ){
 		head = tail = new ListNode<TYPE>(dataIn,nullptr, nullptr);
 	}
-	else if( BA == Before){
+	else if( placementModifier == Before){
 		// insert before head
-		if ( where->getPrev() == nullptr){
+		if ( insertHerePtr->getPrev() == nullptr){
 				head = new ListNode<TYPE>(dataIn,nullptr,head);
 				head->getNext()->setPrev(head);
 		}
-		// insert before element pointed to by where
+		// insert before element pointed to by insertHerePtr
 		else{
-			where->getPrev()->setNext( new ListNode<TYPE>(dataIn, where->getPrev(), where->getNext()));
-			where->getNext()->setPrev(where->getPrev()->getNext());
+			insertHerePtr->getPrev()->setNext( new ListNode<TYPE>(dataIn, insertHerePtr->getPrev(), insertHerePtr->getNext()));
+			insertHerePtr->getNext()->setPrev(insertHerePtr->getPrev()->getNext());
 		}
 	}
-	else if( BA == After){
+	else if( placementModifier == After){
 		// insert after tail
-		if( where->getNext() == nullptr){
+		if( insertHerePtr->getNext() == nullptr){
 			tail = new ListNode<TYPE>(dataIn, tail, nullptr);
 			tail->getPrev()->setNext(tail);
 		}
 		else{
-			where->getNext()->setPrev( new ListNode<TYPE>(dataIn, where, where->getNext()));
-			where->setNext(where->getNext()->getPrev());
+			insertHerePtr->getNext()->setPrev( new ListNode<TYPE>(dataIn, insertHerePtr, insertHerePtr->getNext()));
+			insertHerePtr->setNext(insertHerePtr->getNext()->getPrev());
 		}
 	}
 
@@ -214,7 +157,7 @@ void List<TYPE>::remove(ListNode<TYPE>* removeFrom){
 			tail = removeFrom->getPrev();
 			tail->setNext(nullptr);
 		}
-		// remove from where iterator points
+		// remove from insertHerePtr iterator points
 		else{
 			(removeFrom->getPrev())->setNext( removeFrom->getNext() );
 			(removeFrom->getNext())->setPrev( removeFrom->getPrev() );
@@ -229,24 +172,32 @@ int List<TYPE>::size() const {
 	return listSize;
 }
 
+// ==== removeAllListEntries ====
+template <typename TYPE>
+void List<TYPE>::removeAllListEntries(){
+	ListNode<TYPE> *iterator, *tempPlaceHolder;
+	iterator = head;
+	while(iterator != nullptr){
+		tempPlaceHolder = iterator;
+		iterator = iterator->getNext();
+		delete tempPlaceHolder;
+	}
+	listSize = 0;
+}
+
 // ===== constructor ====
 template <typename TYPE>
-List<TYPE>::List() : head(nullptr), tail(nullptr),
-					listSize(0), ordered(false),
-					orderingFunction(DEFAULT){}
+List<TYPE>::List(){
+						head = nullptr;
+						tail = nullptr;
+						listSize = 0;
+						fullFlag = false;
+}
 
 // ====== destructor ======
 template <typename TYPE>
 List<TYPE>::~List() {
-
-	ListNode<TYPE> *it, *temp;
-	it = head;
-	while(it!=nullptr){
-		temp = it;
-		it=it->getNext();
-		delete temp;
-	}
-
+	removeAllListEntries();
 }
 
 // ====== is empty =====
