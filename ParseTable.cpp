@@ -1,10 +1,9 @@
-// Alexander Edwards
-// CISP 430 Wednesday 6-9pm
-// Spring 2015
-// Assignment #
+/*
+ * author: Alexander Edwards
+ */
 
-#include "ParseTable.h"
-#include "Queue.h"
+#include "ParseTable.hpp"
+#include "Queue.hpp"
 #include <string>
 #include <iostream>
 #include <cstdlib>

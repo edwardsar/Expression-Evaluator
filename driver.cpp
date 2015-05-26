@@ -3,11 +3,11 @@
  * Spring 2015
  * assignment #3
  */
-#include "HashTable.h"
+#include "HashTable.hpp"
 #include<iostream>
 #include<string.h>
-#include "ParseTable.h"
-#include "Evaluator.h"
+#include "ParseTable.hpp"
+#include "Evaluator.hpp"
 
 bool quit(std::string str){
 	return str == "quit";

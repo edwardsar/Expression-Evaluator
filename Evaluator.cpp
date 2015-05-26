@@ -1,13 +1,12 @@
-// Alexander Edwards
-// CISP 430 Wednesday 6-9pm
-// Spring 2015
-// Assignment #
+/*
+ * author: Alexander Edwards
+ */
 
-#include "Evaluator.h"
-#include "List.h"
-#include "Queue.h"
+#include "Evaluator.hpp"
+#include "List.hpp"
+#include "Queue.hpp"
 #include <string>
-#include "HashTable.h"
+#include "HashTable.hpp"
 #include <cctype>
 #include <sstream>
 #include <iostream>
@@ -125,4 +124,3 @@ Evaluator::Evaluator(HashTable<double>* ht){
 Evaluator::~Evaluator() {
 
 }
-

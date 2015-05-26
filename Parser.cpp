@@ -1,9 +1,8 @@
-// Alexander Edwards
-// CISP 430 Wednesday 6-9pm
-// Spring 2015
-// Assignment #3
+/*
+ * author: Alexander Edwards
+ */
 
-#include "Parser.h"
+#include "Parser.hpp"
 #include <string>
 #include <iostream>
 
@@ -60,4 +59,3 @@ Parser::Parser(){
 Parser::~Parser() {
 	// TODO Auto-generated destructor stub
 }
-

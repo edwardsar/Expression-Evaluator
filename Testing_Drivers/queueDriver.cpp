@@ -1,4 +1,4 @@
-#include "../Queue.h"
+#include "../Queue.hpp"
 
 int main(void){
   Queue<int> intQueue;
