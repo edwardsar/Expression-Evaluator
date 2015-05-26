@@ -28,13 +28,14 @@ public:
 		ListNode<TYPE>* ptr;
 		List<TYPE>* coupledList;
 	};
-	// === end Iterator definition =====
+	// ---- end Iterator definition ----
 	List();
 	virtual ~List();
 	bool isEmpty() const;
 	bool search(TYPE dataKey) const;
 	int size() const;
-	void insert(TYPE dataIn);
+	void append(TYPE dataIn);
+	void prepend(TYPE dataIn);
 	void remove(ListNode<TYPE>* removeFrom);
 	TYPE peek(ListNode<TYPE>* peekAt);
 	bool isFull();
@@ -42,13 +43,12 @@ public:
 	List<TYPE>::Iterator getIterator();
 protected:
 	enum InsertPlacementModifier { Before, After};
-	void insert(TYPE dataIn, ListNode<TYPE>* insertHerePtr, InsertPlacementModifier placementModifier);
+	void insertHere(TYPE dataIn, InsertPlacementModifier placementModifier, ListNode<TYPE>* insertHerePtr);
 	ListNode<TYPE>* start();
 	ListNode<TYPE>* end();
 private:
 	ListNode<TYPE> *head, *tail;
 	unsigned int listSize;
-	bool fullFlag;
 };
 
 /*******************************************************************************
@@ -61,21 +61,6 @@ template <typename TYPE>
 typename List<TYPE>::Iterator List<TYPE>::getIterator(){
 	return List<TYPE>::Iterator(this);
 }
-
-// ==== isFull ====
-// attempts to allocate memory with new, if successful it returns true.
-template <typename TYPE>
-bool List<TYPE>::isFull(){
-	ListNode<TYPE>* temp= new ListNode<TYPE>();
-	if(temp == nullptr){
-		return true;
-	}
-	else{
-		delete temp;
-		return false;
-	}
-}
-
 // ==== start ====
 template <typename TYPE>
 ListNode<TYPE>* List<TYPE>::start(){
@@ -84,8 +69,6 @@ ListNode<TYPE>* List<TYPE>::start(){
 // ====== end ====
 template <typename TYPE>
 ListNode<TYPE>* List<TYPE>::end(){
-	// insert behind element in one element list(end)
-	// end = true
 	return tail;
 }
 // ==== peek ====
@@ -93,15 +76,19 @@ template <typename TYPE>
 TYPE List<TYPE>::peek(ListNode<TYPE>* peekAt){
 	return peekAt->getData();
 }
-
-// ====== insert =======
+// ====== prepend =======
 template <typename TYPE>
-void List<TYPE>::insert(TYPE dataIn){
-		insert(dataIn, head, After);      // FIX FIX FIX
+void List<TYPE>::prepend(TYPE dataIn){
+		insertHere(dataIn, Before, head);
 }
-// ====== insert =======
+// ====== append =======
 template <typename TYPE>
-void List<TYPE>::insert(TYPE dataIn, ListNode<TYPE>* insertHerePtr, InsertPlacementModifier placementModifier){
+void List<TYPE>::append(TYPE dataIn){
+		insertHere(dataIn, After, tail);
+}
+// ====== insertHere =======
+template <typename TYPE>
+void List<TYPE>::insertHere(TYPE dataIn, InsertPlacementModifier placementModifier,  ListNode<TYPE>* insertHerePtr){
 	// special empty list case
 	if( this->isEmpty() ){
 		head = tail = new ListNode<TYPE>(dataIn,nullptr, nullptr);
@@ -129,8 +116,6 @@ void List<TYPE>::insert(TYPE dataIn, ListNode<TYPE>* insertHerePtr, InsertPlacem
 			insertHerePtr->setNext(insertHerePtr->getNext()->getPrev());
 		}
 	}
-
-
 	listSize++;
 }
 // ====== remove ====
@@ -191,7 +176,6 @@ List<TYPE>::List(){
 						head = nullptr;
 						tail = nullptr;
 						listSize = 0;
-						fullFlag = false;
 }
 
 // ====== destructor ======
