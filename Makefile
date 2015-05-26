@@ -4,19 +4,19 @@
 
 # ==== Testing suite ====
 # Rules and recipes for building testing drivers
-fullTestSuite: listTest queueTest stackTest
-	cat listTest queueTest stackTest > fullTestSuite
+fullTestSuiteResults.txt: listTest.o queueTest.o stackTest.o
+	cat listTest.o queueTest.o stackTest.o > fullTestSuiteResults.txt
 
-listTest: List.hpp ListNode.hpp Testing_Drivers/listDriver.cpp
-	g++ -std=c++11 -o listTest Testing_Drivers/listDriver.cpp
+listTest.o: List.hpp ListNode.hpp Testing_Drivers/listDriver.cpp
+	g++ -std=c++11 -o listTest.o Testing_Drivers/listDriver.cpp
 
-queueTest: List.hpp ListNode.hpp Queue.hpp Testing_Drivers/queueDriver.cpp
-	g++ -std=c++11 -o queueTest Testing_Drivers/queueDriver.cpp
+queueTest.o: List.hpp ListNode.hpp Queue.hpp Testing_Drivers/queueDriver.cpp
+	g++ -std=c++11 -o queueTest.o Testing_Drivers/queueDriver.cpp
 
-stackTest: List.hpp ListNode.hpp Stack.hpp Testing_Drivers/stackDriver.cpp
-	g++ -std=c++11 -o stackTest Testing_Drivers/queueDriver.cpp
+stackTest.o: List.hpp ListNode.hpp Stack.hpp Testing_Drivers/stackDriver.cpp
+	g++ -std=c++11 -o stackTest.o Testing_Drivers/queueDriver.cpp
 # ---- end of test suite ----
 
 
 clean:
-	rm -fv fullTestSuite listTest queueTest stackTest
+	rm -fv fullTestSuiteResults.txt listTest.o queueTest.o stackTest.o
