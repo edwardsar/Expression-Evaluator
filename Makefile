@@ -14,7 +14,7 @@ queueTest.o: List.hpp ListNode.hpp Queue.hpp Testing_Drivers/queueDriver.cpp
 	g++ -std=c++11 -o queueTest.o Testing_Drivers/queueDriver.cpp
 
 stackTest.o: List.hpp ListNode.hpp Stack.hpp Testing_Drivers/stackDriver.cpp
-	g++ -std=c++11 -o stackTest.o Testing_Drivers/queueDriver.cpp
+	g++ -std=c++11 -o stackTest.o Testing_Drivers/stackDriver.cpp
 # ---- end of test suite ----
 
 
