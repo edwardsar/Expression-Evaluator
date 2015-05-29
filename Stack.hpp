@@ -27,21 +27,21 @@ public:
 // ==== showTop ========
 template <typename TYPE>
 TYPE Stack<TYPE>::showTop(){
-	return this->peek(this->start());
+	return this->peekAt(this->headOfList());
 }
 
 // ==== pop =====
 template <typename TYPE>
 TYPE Stack<TYPE>::pop(){
-	TYPE temp = showTop();
-	this->remove(this->start());
-	return temp;
+	TYPE popThis = this->peekAt(this->headOfList());
+	this->removeThisItem(this->headOfList());
+	return popThis;
 }
 
 // ==== push ====
 template <typename TYPE>
 void Stack<TYPE>::push(TYPE dataIn){
-	this->insert(dataIn, this->start(), List<TYPE>::Before);
+	this->prepend(dataIn);
 }
 
 // ==== constructor =====
