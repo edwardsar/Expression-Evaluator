@@ -7,45 +7,47 @@
 #define LIST_HPP_
 #include "ListNode.hpp"
 #include <iostream>
+#include <cassert>
 // ======= class definition =======
 template <typename TYPE>
 class List {
 public:
-	// ======= Iterator definition =======
 	class Iterator {
 	public:
-		void getNext(){ptr = ptr->getNext(); }
-		void getPrev(){ptr = ptr->getPrev(); }
-		TYPE getData(){return ptr->getData();}
-		void startAtHead(){ ptr = coupledList->start(); }
-		void startAtTail(){ ptr = coupledList->end(); }
-		bool end(){ return ptr == nullptr;}
-		void operator=(List<TYPE>::Iterator sourceOfCopy){	ptr = sourceOfCopy.ptr; coupledList = sourceOfCopy.coupledList;}
-		Iterator(){ ptr = nullptr; coupledList = nullptr;}
+		void getNext();
+		void getPrev();
+		TYPE getData();
+		void startAtHead();
+		void startAtTail();
+		bool end();
+		void operator=(List<TYPE>::Iterator sourceOfCopy);
+		Iterator();
 	private:
-		Iterator(List<TYPE>* listToCoupleWith){ coupledList = listToCoupleWith; ptr = nullptr;}
+		Iterator(List<TYPE>* listToCoupleWith);
 		friend class List<TYPE>;
 		ListNode<TYPE>* ptr;
 		List<TYPE>* coupledList;
 	};
-	// ---- end Iterator definition ----
+
 	List();
 	virtual ~List();
 	bool isEmpty() const;
 	bool search(TYPE dataKey) const;
+	void remove(TYPE dataKey);
 	int size() const;
 	void append(TYPE dataIn);
 	void prepend(TYPE dataIn);
-	void remove(ListNode<TYPE>* removeFrom);
-	TYPE peek(ListNode<TYPE>* peekAt);
 	bool isFull();
-	void removeAllListEntries();
+	void erase();
 	List<TYPE>::Iterator getIterator();
 protected:
 	enum InsertPlacementModifier { Before, After};
+	TYPE peekAt(ListNode<TYPE>* peekAtThisNode);
 	void insertHere(TYPE dataIn, InsertPlacementModifier placementModifier, ListNode<TYPE>* insertHerePtr);
-	ListNode<TYPE>* start();
-	ListNode<TYPE>* end();
+	ListNode<TYPE>* headOfList();
+	ListNode<TYPE>* tailOfList();
+	void removeThisItem(ListNode<TYPE>* removeFromHere);
+	ListNode<TYPE>* find(TYPE dataKey) const;
 private:
 	ListNode<TYPE> *head, *tail;
 	unsigned int listSize;
@@ -61,20 +63,21 @@ template <typename TYPE>
 typename List<TYPE>::Iterator List<TYPE>::getIterator(){
 	return List<TYPE>::Iterator(this);
 }
-// ==== start ====
+// ==== headOfList ====
 template <typename TYPE>
-ListNode<TYPE>* List<TYPE>::start(){
+ListNode<TYPE>* List<TYPE>::headOfList(){
 	return head;
 }
-// ====== end ====
+// ==== peekAt ====
 template <typename TYPE>
-ListNode<TYPE>* List<TYPE>::end(){
-	return tail;
+TYPE List<TYPE>::peekAt(ListNode<TYPE>* peekAtThisNode){
+	assert(peekAtThisNode != nullptr);
+	peekAtThisNode->getData();
 }
-// ==== peek ====
+// ====== tailOfList ====
 template <typename TYPE>
-TYPE List<TYPE>::peek(ListNode<TYPE>* peekAt){
-	return peekAt->getData();
+ListNode<TYPE>* List<TYPE>::tailOfList(){
+	return tail;
 }
 // ====== prepend =======
 template <typename TYPE>
@@ -118,36 +121,40 @@ void List<TYPE>::insertHere(TYPE dataIn, InsertPlacementModifier placementModifi
 	}
 	listSize++;
 }
-// ====== remove ====
+// ==== remove ====
 template <typename TYPE>
-void List<TYPE>::remove(ListNode<TYPE>* removeFrom){
-	// special empty list case
-	if(isEmpty()){
-		return;
+void List<TYPE>::remove(TYPE itemToRemove){
+	ListNode<TYPE>* locationOfItemToBeRemoved = find(itemToRemove);
+	if(locationOfItemToBeRemoved != nullptr){
+		removeThisItem(locationOfItemToBeRemoved);
 	}
+}
+// ====== removeThisItem ====
+template <typename TYPE>
+void List<TYPE>::removeThisItem(ListNode<TYPE>* removeFromHere){
 	// list has one element to remove
-	else if( head == tail){
+	if( removeFromHere == head && removeFromHere == tail){
 		delete head;
 		head = tail = nullptr;
 		listSize--;
 	}
 	else{
 		// remove head
-		if(removeFrom == head){
-			head = removeFrom->getNext();
+		if(removeFromHere == head){
+			head = removeFromHere->getNext();
 			head->setPrev(nullptr);
 		}
 		// remove tail
-		else if(removeFrom == tail){
-			tail = removeFrom->getPrev();
+		else if(removeFromHere == tail){
+			tail = removeFromHere->getPrev();
 			tail->setNext(nullptr);
 		}
-		// remove from insertHerePtr iterator points
+		// remove something in the middle
 		else{
-			(removeFrom->getPrev())->setNext( removeFrom->getNext() );
-			(removeFrom->getNext())->setPrev( removeFrom->getPrev() );
+			(removeFromHere->getPrev())->setNext( removeFromHere->getNext() );
+			(removeFromHere->getNext())->setPrev( removeFromHere->getPrev() );
 		}
-		delete removeFrom;
+		delete removeFromHere;
 		listSize--;
 	}
 }
@@ -157,9 +164,9 @@ int List<TYPE>::size() const {
 	return listSize;
 }
 
-// ==== removeAllListEntries ====
+// ==== erase ====
 template <typename TYPE>
-void List<TYPE>::removeAllListEntries(){
+void List<TYPE>::erase(){
 	ListNode<TYPE> *iterator, *tempPlaceHolder;
 	iterator = head;
 	while(iterator != nullptr){
@@ -181,7 +188,7 @@ List<TYPE>::List(){
 // ====== destructor ======
 template <typename TYPE>
 List<TYPE>::~List() {
-	removeAllListEntries();
+	erase();
 }
 
 // ====== is empty =====
@@ -192,24 +199,77 @@ bool List<TYPE>::isEmpty() const{
 	else
 		return true;
 }
+// ==== find ====
+template <typename TYPE>
+ListNode<TYPE>* List<TYPE>::find(TYPE dataKey) const {
+	ListNode<TYPE>* iterator;
+	if(isEmpty()){
+		return nullptr;
+	}
+	iterator = head;
+	if(iterator->getData() == dataKey){
+		return iterator;
+	}
+	while(iterator->hasNext()){
+		iterator = iterator->getNext();
+		if(iterator->getData() == dataKey){
+			return iterator;
+		}
+	}
+	return nullptr;
+}
 // ===== search ========
 template <typename TYPE>
 bool List<TYPE>::search(TYPE dataKey) const {
-	ListNode<TYPE>* currentNode;
-	currentNode = head;
-	if(isEmpty()){
-		return false;
-	}
-	if(currentNode->getData() == dataKey){
+	if(find(dataKey) != nullptr){
 		return true;
 	}
-	while(currentNode->hasNext()){
-		currentNode = currentNode->getNext();
-		if(currentNode->getData() == dataKey){
-			return true;
-		}
+	else{
+		return false;
 	}
-	return false;
+}
+// ======= Iterator definition =======
+template <typename TYPE>
+void List<TYPE>::Iterator::getNext(){
+	assert(ptr != nullptr);
+	ptr = ptr->getNext();
 }
 
+template <typename TYPE>
+void List<TYPE>::Iterator::getPrev(){
+	assert(ptr != nullptr);
+	ptr = ptr->getPrev();
+}
+template <typename TYPE>
+TYPE List<TYPE>::Iterator::getData(){
+	assert(ptr != nullptr);
+	return ptr->getData();
+}
+template <typename TYPE>
+void List<TYPE>::Iterator::startAtHead(){
+	ptr = coupledList->headOfList();
+}
+template <typename TYPE>
+void List<TYPE>::Iterator::startAtTail(){
+	ptr = coupledList->tailOfList();
+}
+template <typename TYPE>
+bool List<TYPE>::Iterator::end(){
+	return ptr == nullptr;
+}
+template <typename TYPE>
+void List<TYPE>::Iterator::operator=(List<TYPE>::Iterator sourceOfCopy){
+	ptr = sourceOfCopy.ptr;
+	coupledList = sourceOfCopy.coupledList;
+}
+template <typename TYPE>
+List<TYPE>::Iterator::Iterator(){
+	ptr = nullptr;
+	coupledList = nullptr;
+}
+template <typename TYPE>
+List<TYPE>::Iterator::Iterator(List<TYPE>* listToCoupleWith){
+	coupledList = listToCoupleWith;
+	ptr = nullptr;
+}
 #endif /* LIST_H_ */
