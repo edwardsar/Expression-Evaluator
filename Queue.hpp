@@ -1,6 +1,5 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
+
 
 
 #ifndef QUEUE_HPP_
@@ -26,17 +25,17 @@ public:
 
 template <typename TYPE>
 void Queue<TYPE>::enQueue(TYPE dataIn){
-	this->insert(dataIn, this->end(), List<TYPE>::After);
+	this->append(dataIn);
 }
 template <typename TYPE>
 TYPE Queue<TYPE>::showTop(){
-	return this->peek(this->start());
+	return this->peekAt(this->headOfList());
 }
 template <typename TYPE>
 TYPE Queue<TYPE>::deQueue(){
-	TYPE temp = this->peek(this->start());
-	this->remove(this->start());
-	return temp;
+	TYPE queueThis = this->peekAt(this->headOfList());
+	this->removeThisItem(this->headOfList());
+	return queueThis;
 }
 template <typename TYPE>
 Queue<TYPE>::Queue(): List<TYPE>() {
