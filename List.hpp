@@ -1,6 +1,4 @@
-/*
- * Author: Alexander Edwards
- */
+// Author: Alexander Edwards
 
 
 #ifndef LIST_HPP_
@@ -72,7 +70,7 @@ ListNode<TYPE>* List<TYPE>::headOfList(){
 template <typename TYPE>
 TYPE List<TYPE>::peekAt(ListNode<TYPE>* peekAtThisNode){
 	assert(peekAtThisNode != nullptr);
-	peekAtThisNode->getData();
+	return peekAtThisNode->getData();
 }
 // ====== tailOfList ====
 template <typename TYPE>
@@ -180,9 +178,9 @@ void List<TYPE>::erase(){
 // ===== constructor ====
 template <typename TYPE>
 List<TYPE>::List(){
-						head = nullptr;
-						tail = nullptr;
-						listSize = 0;
+	head = nullptr;
+	tail = nullptr;
+	listSize = 0;
 }
 
 // ====== destructor ======

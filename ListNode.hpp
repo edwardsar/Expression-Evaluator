@@ -1,6 +1,5 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
+
 
 #ifndef LISTNODE_HPP_
 #define LISTNODE_HPP_
