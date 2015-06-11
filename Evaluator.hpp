@@ -1,6 +1,4 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
 
 #ifndef EVALUATOR_HPP_
 #define EVALUATOR_HPP_
@@ -17,8 +15,8 @@ private:
 	std::string lhs;
 	bool symbolTableFlag;
 	Stack<double> operandStack;
-	int numOfOperators = 9;
-	std::string Operators[9] = { "-", "+", "*", "/", "=", "SIN", "COS", "ABS", "SQRT"};
+	int numOfOperators = 13;
+	std::string Operators[13] = { "-", "+", "*", "/", "=", "SIN", "COS", "ABS", "SQRT", "sin", "cos", "abs", "sqrt"};
 	bool isVar(std::string str);
 	double valueOf(std::string in);
 	bool isUndefined(std::string in);
@@ -31,4 +29,4 @@ public:
 	virtual ~Evaluator();
 };
 
-#endif /* EVALUATOR_HPP_ */
+#endif /* EVALUATOR_H_ */

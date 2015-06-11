@@ -1,6 +1,5 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
+
 
 #include "Evaluator.hpp"
 #include "List.hpp"
@@ -11,20 +10,22 @@
 #include <sstream>
 #include <iostream>
 #include <math.h>
+#include <cstdlib>
 
 double Evaluator::evaluatePostfix(Queue<std::string>* postfixQueue){
 	std::string tempToken;
 	double a, b;
 
-
+	std::cout << "Postfix notation: ";
 	while(!postfixQueue->isEmpty()){
 		tempToken = postfixQueue->deQueue();
-
-
+		std::cout << tempToken << " ";
 		if(isVar(tempToken) && !isOperator(tempToken)  && isUndefined(tempToken)){
 			lhs = tempToken;
-			if(!postfixQueue->isEmpty())
+			if(!postfixQueue->isEmpty()){
 				tempToken = postfixQueue->deQueue();
+				std::cout << tempToken << " ";
+			}
 		}
 
 		if(!isOperator(tempToken)){
@@ -52,31 +53,35 @@ double Evaluator::evaluatePostfix(Queue<std::string>* postfixQueue){
 							a = operandStack.pop();
 							if(b != 0)
 								operandStack.push(a/b);
+							else {
+								std::cout << "ERROR: Divide by zero" << std::endl;
+								exit(EXIT_FAILURE);
+							}
 			}
-			else if(tempToken == "SIN"){
+			else if(tempToken == "SIN" || tempToken == "sin"){
 							a = operandStack.pop();
 							operandStack.push(sin(a));
 			}
-			else if(tempToken == "COS"){
+			else if(tempToken == "COS" || tempToken == "cos"){
 							a = operandStack.pop();
 							operandStack.push(cos(a));
 			}
-			else if(tempToken == "SQRT"){
+			else if(tempToken == "SQRT" || tempToken == "sqrt"){
 							a = operandStack.pop();
 							operandStack.push(sqrt(a));
 			}
-			else if(tempToken == "ABS"){
+			else if(tempToken == "ABS" || tempToken == "abs"){
 							a = operandStack.pop();
 							operandStack.push(abs(a));
 			}
 			else if(tempToken == "="){
 							a = operandStack.showTop();
-							std::cout << "setting " << lhs << " to " << a << std::endl;
 							symbolTable->insert(lhs.c_str(),a);
 			}
 		}
 
 	}
+	std::cout << std::endl;
 	rhs = operandStack.pop();
 	return rhs;
 }
@@ -124,3 +129,4 @@ Evaluator::Evaluator(HashTable<double>* ht){
 Evaluator::~Evaluator() {
 
 }
+
