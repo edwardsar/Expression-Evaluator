@@ -1,6 +1,5 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
+
 
 #include "ParseTable.hpp"
 #include "Queue.hpp"
@@ -8,35 +7,34 @@
 #include <iostream>
 #include <cstdlib>
 
-Queue<std::string>* ParseTable::convertToPostfix(std::string str){
+void ParseTable::convertToPostfix(std::string str){
 	std::string currentToken;
 	std::string topOfS2;
 	tokenStream.str(str);
 	while(tokenStream.hasNext()){
 		currentToken = tokenStream.getNextToken();
-		std::cout << "TokenStream: "<< currentToken << std::endl;
-		if(!stack2.isEmpty()){
-			topOfS2 = stack2.showTop();
+		if(stack2.isEmpty()){
+			topOfS2 ="NULL";
 		}
 		else{
-			topOfS2 = "";
+			topOfS2 = stack2.showTop();
 		}
-		std::cout << "Perform Parse Action With: " << currentToken << " and " << topOfS2 << std::endl;
 		performParseAction(currentToken, topOfS2);
 	}
 	u2();
-	return &queue1;
+
 }
 
 void ParseTable::performParseAction(std::string inputSym, std::string topOfS2){
-	if(topOfS2 == ""){
-		if(!isOperator(inputSym))
+	if(topOfS2 == "NULL"){
+		if(isIdentifier(inputSym))
 			s1(inputSym);
-		else
+		else{
 			s2(inputSym);
+		}
 	}
 	else if(topOfS2 == "="){
-		if(!isOperator(inputSym))
+		if(isIdentifier(inputSym))
 				s1(inputSym);
 		else if(inputSym == "="){
 			err();
@@ -49,11 +47,8 @@ void ParseTable::performParseAction(std::string inputSym, std::string topOfS2){
 		}
 	}
 	else if(topOfS2 =="+" || topOfS2 == "-"){
-		if(!isOperator(inputSym))
+		if(isIdentifier(inputSym))
 				s1(inputSym);
-		else if(isFunction(inputSym)){
-			s1(inputSym);
-		}
 		else if(inputSym=="="){
 			err();
 		}
@@ -63,16 +58,16 @@ void ParseTable::performParseAction(std::string inputSym, std::string topOfS2){
 		else if(inputSym=="*" || inputSym=="/" || inputSym=="("){
 			s2(inputSym);
 		}
+		else if(isFunction(inputSym)){
+			s2(inputSym);
+		}
 		else if(inputSym==")"){
 			uc();
 		}
 	}
 	else if(topOfS2=="*" || topOfS2 == "/"){
-		if(!isOperator(inputSym))
+		if(isIdentifier(inputSym))
 				s1(inputSym);
-		else if(isFunction(inputSym)){
-			s1(inputSym);
-		}
 		else if(inputSym == "="){
 			err();
 		}
@@ -82,12 +77,15 @@ void ParseTable::performParseAction(std::string inputSym, std::string topOfS2){
 		else if(inputSym == "("){
 			s2(inputSym);
 		}
+		else if(isFunction(inputSym)){
+			s2(inputSym);
+		}
 		else if(inputSym == ")"){
 			uc();
 		}
 	}
 	else if(topOfS2=="("){
-		if(!isOperator(inputSym))
+		if(isIdentifier(inputSym))
 				s1(inputSym);
 		else if(inputSym=="="){
 			err();
@@ -95,16 +93,26 @@ void ParseTable::performParseAction(std::string inputSym, std::string topOfS2){
 		else if(inputSym=="*" || inputSym=="/" || inputSym=="+" || inputSym=="-" || inputSym =="("){
 			s2(inputSym);
 		}
+		else if(isFunction(inputSym)){
+			s2(inputSym);
+		}
 		else if(inputSym==")"){
 			uc();
 		}
 	}
 	else if(isFunction(topOfS2)){
-		if(!isOperator(inputSym)){
+		if(isIdentifier(inputSym)){
 			s1(inputSym);
 		}
-		else
+		else if(inputSym == "+" || inputSym == "-" || inputSym == "*" || inputSym=="/"){
 			u1(inputSym);
+		}
+		else if( inputSym == "(" ){
+			s2(inputSym);
+		}
+		else if( inputSym == ")"){
+			uc();
+		}
 	}
 }
 bool ParseTable::isOperator(std::string token){
@@ -121,24 +129,27 @@ bool ParseTable::isFunction(std::string token){
 	}
 	return false;
 }
+bool ParseTable::isIdentifier(std::string token){
+	return !(isOperator(token) || isFunction(token));
+}
 void ParseTable::s1(std::string input){
-	queue1.enQueue(input);
+	queue1->enQueue(input);
 }
 void ParseTable::s2(std::string input){
 	stack2.push(input);
 }
 void ParseTable::u1(std::string input){
-	queue1.enQueue(stack2.pop());
+	queue1->enQueue(stack2.pop());
 	stack2.push(input);
 }
 void ParseTable::u2(){
 	while(!stack2.isEmpty())
-		queue1.enQueue(stack2.pop());
+		queue1->enQueue(stack2.pop());
 }
 void ParseTable::uc(){
 	std::string temp = stack2.pop();
 	while(temp!="("){
-		queue1.enQueue(temp);
+		queue1->enQueue(temp);
 		temp = stack2.pop();
 	}
 }
@@ -147,11 +158,11 @@ void ParseTable::err(){
 	exit(EXIT_FAILURE);
 }
 ParseTable::~ParseTable() {
-	// TODO Auto-generated destructor stub
+	
 }
 
 
-ParseTable::ParseTable() {
-	// TODO Auto-generated constructor stub
+ParseTable::ParseTable(Queue<std::string>* postfixQueue) {
+	queue1 = postfixQueue;
 
 }

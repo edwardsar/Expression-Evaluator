@@ -1,6 +1,5 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
+
 
 #include "Parser.hpp"
 #include <string>
@@ -57,5 +56,6 @@ Parser::Parser(){
 
 }
 Parser::~Parser() {
-	// TODO Auto-generated destructor stub
+	
 }
+

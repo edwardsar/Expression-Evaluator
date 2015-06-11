@@ -1,10 +1,10 @@
-/*
- * author: Alexander Edwards
- */
+// Author: Alexander Edwards
 
-#ifndef PARSER_HPP_
-#define PARSER_HPP_
+
+#ifndef PARSER_H_
+#define PARSER_H_
 #include <string>
+#include <iostream>
 
 class Parser {
 public:
@@ -26,4 +26,4 @@ private:
 
 };
 
-#endif /* PARSER_HPP_ */
+#endif /* PARSER_H_ */
